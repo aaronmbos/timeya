@@ -1,0 +1,11 @@
+{
+    "name": "time-ya",
+    "scripts": {
+        "build": "npx babel src/js --watch --out-file dist/app.js"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.10.1",
+        "@babel/core": "^7.10.2",
+        "@babel/preset-react": "^7.10.1"
+    }
+}
