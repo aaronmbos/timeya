@@ -1,5 +1,7 @@
 function App(props) {
-    return <TimerCard name={props.name} />
+    const names = ['Aaron', 'Lauren', 'Blayke', 'Brooks', 'Andi'];
+    const cards = names.map((name) => <TimerCard name={name} />);
+    return cards;
 }
 
-ReactDOM.render(<App name="Aaron" />, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById('app'));

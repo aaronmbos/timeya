@@ -16,3 +16,14 @@ body {
 main {
     flex: 1; /* main should take up all the space it can to push footer to bottom of page */
 }
+
+#app {
+    display: flex;
+}
+
+.timer-card {
+    flex: 1;
+    border: 1px solid red;
+    height: 200px;
+    margin: 1em 0;
+}
