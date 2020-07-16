@@ -1,23 +1,29 @@
 const App = () => {
-    const [timers, setCount] = React.useState(0)
+    const [timers, setCount] = React.useState([])
 
-    const handleAdd = () => {
-        setCount(timers + 1);
+    const handleAdd = (val) => {
+        const count = timers.length === 0 ? 0 : timers[timers.length - 1].id;
+        setCount([timers].concat([{"val": val, "id": count + 1}]));
     }  
 
     return (
         <div>
             <AddTimer handleAdd={handleAdd} />
+            <TimerContainer timers={timers} />
         </div>
     );
 }
 
 const AddTimer = (props) => {
-    return <button onClick={props.handleAdd}>Add Timer</button>
+    return <button onClick={() => props.handleAdd("blah")}>Add Timer</button>
 }
 
 const TimerContainer = (props) => {
-    
+    return (
+        <div>
+            {props.timers.map((prop) => <TimerCard key={prop.id} name={prop.val} />)}
+        </div>
+    );
 }
 
 const TimerCard = (props) => {
