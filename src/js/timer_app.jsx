@@ -1,21 +1,43 @@
 const App = () => {
-    const [timers, setCount] = React.useState([])
+    const [showModal, setShowModal] = React.useState(false);
 
-    const handleAdd = (val) => {
-        const count = timers.length === 0 ? 0 : timers[timers.length - 1].id;
-        setCount([timers].concat([{"val": val, "id": count + 1}]));
+    const handleShowModal = () => {
+        setShowModal(true);
     }  
 
     return (
         <div>
-            <AddTimer handleAdd={handleAdd} />
+            <AddModal showModal={showModal} />
+            <AddTimer handleShowModal={handleShowModal} />
             <TimerContainer timers={timers} />
         </div>
     );
 }
 
 const AddTimer = (props) => {
-    return <button onClick={() => props.handleAdd("blah")}>Add Timer</button>
+    return <button onClick={() => props.handleShowModal()}>Add Timer</button>
+}
+
+const AddModal = (props) => {
+    const isModalActive = props.showModal ? ' is-active' : '';
+    return (
+        <div className={`modal${isModalActive}`}>
+            <div className="modal-background"></div>
+            <div className="modal-card">
+                <header className="modal-card-head">
+                    <p className="modal-card-title">Modal title</p>
+                    <button className="delete" aria-label="close"></button>
+                </header>
+                <section className="modal-card-body">
+                    {/*content*/}
+                </section>
+                <footer className="modal-card-foot">
+                    <button className="button is-success">Save changes</button>
+                    <button className="button">Cancel</button>
+                </footer>
+            </div>
+        </div>
+    )
 }
 
 const TimerContainer = (props) => {
