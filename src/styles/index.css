@@ -27,3 +27,7 @@ main {
     height: 200px;
     margin: 1em 0;
 }
+
+.action-row {
+    margin: 1rem 0;
+}
