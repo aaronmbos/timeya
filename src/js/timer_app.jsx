@@ -1,19 +1,30 @@
 const App = () => {
-  [timers, setTimers] = React.useState([]);
+  [timersState, setTimers] = React.useState([]);
 
   const handleAddTimer = () => {
-    const id = timers.length + 1;
-    setTimers(timers.concat([{
+    const id = timersState.length + 1;
+    setTimers(timersState.concat([{
       id: id,
       name: "",
       status: ""
     }]));
   };
 
+  const handleSubmitName = (timerName, id) => {
+    const timers = timersState.slice();
+    timers.forEach(element => {
+      if (element.id === id) {
+        element.name = timerName;
+      }
+    });
+
+    setTimers(timers);
+  };
+
   return (
     <div>
       <ActionRow handleAddTimer={handleAddTimer} />
-      <TimerContainer timers={timers} /> 
+      <TimerContainer timers={timersState} handleSubmitName={handleSubmitName} /> 
     </div>
   );
 };
@@ -37,19 +48,28 @@ const ActionRow = (props) => {
 const TimerContainer = (props) => {
   return (
     <div id="timer-container">
-      {props.timers.map((prop) => <TimerCard key={prop.id} name={prop.name} />)}
+      {props.timers.map((prop) => <TimerCard key={prop.id} id={prop.id} name={prop.name} handleSubmitName={props.handleSubmitName} /> )}
     </div>
   );
 };
 
 const TimerCard = (props) => {
+  React.useEffect(() => {
+    const nameInput = document.getElementById(props.id);
+    if (nameInput !== null) {
+      nameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') props.handleSubmitName(nameInput.value, props.id);
+      });
+    }
+  });
+
   return (
     <div className="timer-card">
       <div className="border">
-        <i title="Delete Timer" className='fas fa-times close-icon'></i>
+        {/* <i title="Delete Timer" className='fas fa-times close-icon'></i> */}
         {props.name === '' ? 
-          <input placeholder="What's this timer's name?" className="name-input" type='text' /> :
-          props.name
+          <input id={props.id} placeholder="What's this timer's name?" className="name-input" type='text' /> :
+          <div className="timer-name">{props.name}</div>
         }
         <div className='timer-container'>
           0:00:00
