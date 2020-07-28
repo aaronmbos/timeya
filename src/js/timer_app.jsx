@@ -71,7 +71,7 @@ const TimerCard = (props) => {
           <input id={props.id} placeholder="What's this timer's name?" className="name-input" type='text' /> :
           <div className="timer-name">{props.name}</div>
         }
-        <div className='timer-container'>
+        <div className='timer'>
           0:00:00
         </div>
         <div className='timer-controls'>
