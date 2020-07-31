@@ -57,6 +57,7 @@ const TimerCard = (props) => {
   React.useEffect(() => {
     const nameInput = document.getElementById(props.id);
     if (nameInput !== null) {
+      nameInput.focus();
       nameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') props.handleSubmitName(nameInput.value, props.id);
       });
@@ -68,14 +69,14 @@ const TimerCard = (props) => {
       <div className="border">
         {/* <i title="Delete Timer" className='fas fa-times close-icon'></i> */}
         {props.name === '' ? 
-          <input id={props.id} placeholder="What's this timer's name?" className="name-input" type='text' /> :
+          <input id={props.id} placeholder="What are you timing?" className="name-input" type='text' /> :
           <div className="timer-name">{props.name}</div>
         }
         <div className='timer'>
           0:00:00
         </div>
         <div className='timer-controls'>
-
+          <i className="fas fa-play-circle play-button"></i>
         </div>
       </div>
     </div>

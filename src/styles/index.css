@@ -80,11 +80,29 @@ main {
 
 .timer {
     text-align: center;
-    height: 50%;
-    /* border-top: 1px solid slategray; */
+    height: 40%;
+    border-top: 1px solid slategray;
     border-bottom: 1px solid slategray;
     font-size: 3rem;
-    padding-top: 10%;
+    margin-top: 5%;
+    padding-top: 2%;
+}
+
+.timer-controls {
+    display: flex;
+    align-items: center;
+    height: 30%;
+    justify-content: center;
+}
+
+.play-button {
+    font-size: 2.3rem;
+    cursor: pointer;
+    color: #3ec46d;
+}
+
+.play-button:hover {
+    color: #3edf7d;
 }
 
 .action-row {
