@@ -6,7 +6,8 @@ const App = () => {
     setTimers(timersState.concat([{
       id: id,
       name: "",
-      status: ""
+      status: "",
+      seconds: 59
     }]));
   };
 
@@ -48,7 +49,7 @@ const ActionRow = (props) => {
 const TimerContainer = (props) => {
   return (
     <div id="timer-container">
-      {props.timers.map((prop) => <TimerCard key={prop.id} id={prop.id} name={prop.name} handleSubmitName={props.handleSubmitName} /> )}
+      {props.timers.map((prop) => <TimerCard key={prop.id} {...prop} /*id={prop.id} name={prop.name} handleSubmitName={props.handleSubmitName}*/ /> )}
     </div>
   );
 };
@@ -64,19 +65,25 @@ const TimerCard = (props) => {
     }
   });
 
+  const getTimeFromSeconds = (totalSeconds) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor(totalSeconds % 3600 / 60);
+    const seconds = totalSeconds % 3600 % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+
   return (
     <div className="timer-card">
       <div className="border">
-        {/* <i title="Delete Timer" className='fas fa-times close-icon'></i> */}
         {props.name === '' ? 
           <input id={props.id} placeholder="What are you timing?" className="name-input" type='text' /> :
           <div className="timer-name">{props.name}</div>
         }
         <div className='timer'>
-          0:00:00
+          {getTimeFromSeconds(props.seconds)}
         </div>
         <div className='timer-controls'>
-          <i className="fas fa-play-circle play-button"></i>
+          <i id={`play-${props.id}`} className="fas fa-play-circle play-button"></i>
         </div>
       </div>
     </div>
