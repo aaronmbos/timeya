@@ -49,7 +49,7 @@ const ActionRow = (props) => {
 const TimerContainer = (props) => {
   return (
     <div id="timer-container">
-      {props.timers.map((prop) => <TimerCard key={prop.id} {...prop} /*id={prop.id} name={prop.name} handleSubmitName={props.handleSubmitName}*/ /> )}
+      {props.timers.map((prop) => <TimerCard key={prop.id} {...prop} handleSubmitName={props.handleSubmitName} /> )}
     </div>
   );
 };
