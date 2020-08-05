@@ -99,12 +99,28 @@ main {
     font-size: 2.3rem;
     cursor: pointer;
     color: #3ec46d;
+    margin: 0 .5rem;
 }
 
 .play-button:hover {
     color: #3edf7d;
 }
 
+.reset-button {
+    font-size: 2rem;
+    cursor: pointer;
+    color: #3273DC;
+    margin: 0 .5rem;
+}
+
+.reset-button:hover {
+    color: #3273FF
+}
+
 .action-row {
     margin: 1rem 0;
+}
+
+.hide {
+    display: none !important;
 }

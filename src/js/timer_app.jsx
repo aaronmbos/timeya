@@ -22,7 +22,7 @@ const App = () => {
     setTimers(timers);
   };
 
-  const handleStartTimer = (id) => {
+  const handleTimerChange = (id) => {
     const timers = timersState.slice();
     timers.forEach(element => {
       if (element.id === id) {
@@ -36,7 +36,7 @@ const App = () => {
   return (
     <div>
       <ActionRow handleAddTimer={handleAddTimer} />
-      <TimerContainer timers={timersState} handleSubmitName={handleSubmitName} handleStartTimer={handleStartTimer}/> 
+      <TimerContainer timers={timersState} handleSubmitName={handleSubmitName} handleTimerChange={handleTimerChange}/> 
     </div>
   );
 };
@@ -45,7 +45,7 @@ const ActionRow = (props) => {
   return (
     <div className="action-row buttons are-small">
       <button
-        className="button is-success"
+        className="button is-success is-outlined"
         onClick={() => props.handleAddTimer()}
       >
         <span className="icon is-small">
@@ -65,7 +65,7 @@ const TimerContainer = (props) => {
           key={prop.id} 
           {...prop} 
           handleSubmitName={props.handleSubmitName} 
-          handleStartTimer={props.handleStartTimer} 
+          handleTimerChange={props.handleTimerChange} 
           /> })}
     </div>
   );
@@ -77,8 +77,6 @@ const TimerCard = (props) => {
   const tick = () => setSeconds(secondsState + 1);
   
   React.useEffect(() => {
-    document.getElementById(`play-${props.id}`).onclick = () => props.handleStartTimer(props.id);
-
     if (props.isStarted) {
       interval = setInterval(() => tick(), 1000);
     }
@@ -98,6 +96,12 @@ const TimerCard = (props) => {
     }
   });
 
+  const handleTimerChange = (id) => {
+    setSeconds(0);
+    props.handleTimerChange(id);
+    clearInterval(interval);
+  }
+
   const getTimeFromSeconds = (totalSeconds) => {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor(totalSeconds % 3600 / 60);
@@ -115,8 +119,9 @@ const TimerCard = (props) => {
         <div className='timer'>
           {getTimeFromSeconds(secondsState)}
         </div>
-        <div className='timer-controls'>
-          <i id={`play-${props.id}`} className={`fas ${props.isStarted ? 'fa-pause-circle play-button' : 'fa-play-circle play-button'}`}></i>
+        <div className={`timer-controls ${props.name ? '' : 'hide'}`}>
+          <i id={`play-${props.id}`} onClick={() => props.handleTimerChange(props.id)} className={`fas ${props.isStarted ? 'fa-pause-circle play-button' : 'fa-play-circle play-button'}`}></i>
+          <i id={`reset-${props.id}`} onClick={() => handleTimerChange(props.id)} className={`fas fa-redo reset-button ${props.isStarted && secondsState > 0 ? '' : 'hide'}`}></i>
         </div>
       </div>
     </div>
