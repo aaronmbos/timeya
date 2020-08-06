@@ -44,6 +44,15 @@ main {
     box-shadow: 0 0 5px 2px #ccc;
 }
 
+.border-overlay {
+    border-radius: 5%;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 100;
+    background-color: transparent;
+}
+
 .name-input {
     font-size: 1.3rem;
     margin: 15px 0 0 5px;
@@ -123,4 +132,28 @@ main {
 
 .hide {
     display: none !important;
+}
+
+.delete-button {
+    position: absolute;
+    right: -7px;
+    top:-7px;
+    color: red;
+    font-size: 1.4rem;
+    z-index: 11;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    color: #fc2666;
+}
+
+.delete-background {
+    position: absolute;
+    right: -7px;
+    top:-7px;
+    color: #fff;
+    font-size: 1.4rem;
+    z-index: 10;
+    cursor: pointer;
 }
