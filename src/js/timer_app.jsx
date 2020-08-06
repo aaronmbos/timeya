@@ -33,10 +33,26 @@ const App = () => {
     setTimers(timers);
   }
 
+  const handleDeleteTimer = (id) => {
+    const timers = timersState.slice();
+    timers.forEach((element, idx) => {
+      if (element.id === id) {
+        let del = timers.splice(idx, 1);
+      }
+    });
+
+    setTimers(timers);
+  }
+
   return (
     <div>
       <ActionRow handleAddTimer={handleAddTimer} />
-      <TimerContainer timers={timersState} handleSubmitName={handleSubmitName} handleTimerChange={handleTimerChange}/> 
+      <TimerContainer 
+        timers={timersState} 
+        handleSubmitName={handleSubmitName} 
+        handleTimerChange={handleTimerChange}
+        handleDeleteTimer={handleDeleteTimer}
+      /> 
     </div>
   );
 };
@@ -65,7 +81,8 @@ const TimerContainer = (props) => {
           key={prop.id} 
           {...prop} 
           handleSubmitName={props.handleSubmitName} 
-          handleTimerChange={props.handleTimerChange} 
+          handleTimerChange={props.handleTimerChange}
+          handleDeleteTimer={props.handleDeleteTimer}
           /> })}
     </div>
   );
@@ -92,6 +109,7 @@ const TimerCard = (props) => {
       nameInput.focus();
       nameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') props.handleSubmitName(nameInput.value, props.id);
+        document.getElementById(`play-${props.id}`).focus();
       });
     }
   });
@@ -109,19 +127,33 @@ const TimerCard = (props) => {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }
 
+  const handleCardOut = () => {
+    document.getElementById(`deleteBack-${props.id}`).classList.add('hide');
+    document.getElementById(`delete-${props.id}`).classList.add('hide');
+  }
+
+  const handleCardOver = () => {
+    document.getElementById(`deleteBack-${props.id}`).classList.remove('hide');
+    document.getElementById(`delete-${props.id}`).classList.remove('hide');
+  }
+
   return (
     <div className="timer-card">
-      <div className="border">
-        {props.name === '' ? 
-          <input id={props.id} placeholder="What are you timing?" className="name-input" type='text' /> :
-          <div className="timer-name">{props.name}</div>
-        }
-        <div className='timer'>
-          {getTimeFromSeconds(secondsState)}
-        </div>
-        <div className={`timer-controls ${props.name ? '' : 'hide'}`}>
-          <i id={`play-${props.id}`} onClick={() => props.handleTimerChange(props.id)} className={`fas ${props.isStarted ? 'fa-pause-circle play-button' : 'fa-play-circle play-button'}`}></i>
-          <i id={`reset-${props.id}`} onClick={() => handleTimerChange(props.id)} className={`fas fa-redo reset-button ${props.isStarted && secondsState > 0 ? '' : 'hide'}`}></i>
+      <div onMouseOver={handleCardOver} onMouseOut={handleCardOut} className="border-overlay">
+        <div className="border">
+          <i id={`deleteBack-${props.id}`} className="fas fa-circle delete-background hide"></i>
+          <i onClick={() => props.handleDeleteTimer(props.id)} id={`delete-${props.id}`} className="fas fa-times-circle delete-button hide"></i>
+          {props.name === '' ? 
+            <input id={props.id} placeholder="What are you timing?" className="name-input" type='text' /> :
+            <div className="timer-name">{props.name}</div>
+          }
+          <div className='timer'>
+            {getTimeFromSeconds(secondsState)}
+          </div>
+          <div className={`timer-controls ${props.name ? '' : 'hide'}`}>
+            <i id={`play-${props.id}`} onClick={() => props.handleTimerChange(props.id)} className={`fas ${props.isStarted ? 'fa-pause-circle play-button' : 'fa-play-circle play-button'}`}></i>
+            <i id={`reset-${props.id}`} onClick={() => handleTimerChange(props.id)} className={`fas fa-redo reset-button ${props.isStarted && secondsState > 0 ? '' : 'hide'}`}></i>
+          </div>
         </div>
       </div>
     </div>
