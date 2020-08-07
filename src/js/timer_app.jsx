@@ -1,14 +1,32 @@
 const App = () => {
   [timersState, setTimers] = React.useState([]);
+  [sequenceState, setSequence] = React.useState(() => {
+    try {
+      const sequenceValue = window.localStorage.getItem('timerSequence');
+      return sequenceValue ? parseInt(sequenceValue) : 1;
+    } catch (error) {
+      console.log(error);
+      return 1;
+    }
+  })
 
   const handleAddTimer = () => {
-    const id = timersState.length + 1;
     setTimers(timersState.concat([{
-      id: id,
+      id: sequenceState,
       name: "",
       status: "",
       isStarted: false
     }]));
+    
+    setSequence(() => {
+      try {
+        window.localStorage.setItem('timerSequence', sequenceState + 1);
+        return sequenceState + 1;
+      } catch (error) {
+        console.log(error);
+        return sequenceState + 1;
+      }
+    })
   };
 
   const handleSubmitName = (timerName, id) => {
