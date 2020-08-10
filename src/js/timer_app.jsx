@@ -1,32 +1,44 @@
-const App = () => {
-  [timersState, setTimers] = React.useState([]);
-  [sequenceState, setSequence] = React.useState(() => {
+// Found this to be super useful https://usehooks.com/useLocalStorage/
+const useLocalStorage = (key, initialValue) => {
+  const [storedValue, setStoredValue] = React.useState(() => {
     try {
-      const sequenceValue = window.localStorage.getItem('timerSequence');
-      return sequenceValue ? parseInt(sequenceValue) : 1;
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
     } catch (error) {
       console.log(error);
-      return 1;
+      return initialValue;
     }
-  })
+  });
+
+  // Return a wrapped version of useState's setter function that persists the new value to localStorage.
+  const setValue = value => {
+    try {
+      // Allow value to be a function so we have same API as useState
+      const valueToStore =
+        value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  return [storedValue, setValue];
+}
+
+const App = () => {
+  const [timersState, setTimers] = useLocalStorage('timers', []);
+
+  const [sequenceState, setSequence] = useLocalStorage('timerSequence', 1);
 
   const handleAddTimer = () => {
-    setTimers(timersState.concat([{
+    setTimers([{
       id: sequenceState,
       name: "",
       status: "",
       isStarted: false
-    }]));
+    }].concat(timersState));
     
-    setSequence(() => {
-      try {
-        window.localStorage.setItem('timerSequence', sequenceState + 1);
-        return sequenceState + 1;
-      } catch (error) {
-        console.log(error);
-        return sequenceState + 1;
-      }
-    })
+    setSequence(sequenceState + 1);
   };
 
   const handleSubmitName = (timerName, id) => {
@@ -36,7 +48,7 @@ const App = () => {
         element.name = timerName;
       }
     });
-
+    
     setTimers(timers);
   };
 
@@ -60,6 +72,11 @@ const App = () => {
     });
 
     setTimers(timers);
+  }
+
+  const saveTimers = (timers) => {
+    window.localStorage.setItem('timers', JSON.stringify(timers));
+    return timers;
   }
 
   return (
@@ -107,9 +124,18 @@ const TimerContainer = (props) => {
 };
 
 const TimerCard = (props) => {
-  const [secondsState, setSeconds] = React.useState(0);
+  const [secondsState, setSeconds] = React.useState(() => {
+    const seconds = window.localStorage.getItem(props.id.toString());
+    return seconds ? parseInt(seconds) : 0;
+  });
+
   let interval;
-  const tick = () => setSeconds(secondsState + 1);
+  const tick = () => setSeconds(() => {
+    const seconds = window.localStorage.getItem(props.id.toString());
+    const ticked = seconds ? parseInt(seconds) + 1 : 0;
+    window.localStorage.setItem(props.id.toString(), ticked);
+    return ticked;
+  });
   
   React.useEffect(() => {
     if (props.isStarted) {
@@ -133,7 +159,10 @@ const TimerCard = (props) => {
   });
 
   const handleTimerChange = (id) => {
-    setSeconds(0);
+    setSeconds(() => {
+      window.localStorage.setItem(id.toString(), 0);
+      return 0;
+    });
     props.handleTimerChange(id);
     clearInterval(interval);
   }
