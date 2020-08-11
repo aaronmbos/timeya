@@ -68,7 +68,6 @@ const App = () => {
       <TimerContainer 
         timers={timersState} 
         handleSubmitName={handleSubmitName} 
-        handleTimerChange={handleTimerChange}
         handleDeleteTimer={handleDeleteTimer}
       /> 
     </div>
@@ -99,7 +98,6 @@ const TimerContainer = (props) => {
           key={prop.id} 
           {...prop} 
           handleSubmitName={props.handleSubmitName} 
-          handleTimerChange={props.handleTimerChange}
           handleDeleteTimer={props.handleDeleteTimer}
           /> })}
     </div>
@@ -143,7 +141,6 @@ const TimerCard = (props) => {
   }
 
   const getTimeFromSeconds = (totalSeconds) => {
-    console.log(totalSeconds);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor(totalSeconds % 3600 / 60);
     const seconds = totalSeconds % 3600 % 60;
