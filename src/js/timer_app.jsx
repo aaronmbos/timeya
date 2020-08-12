@@ -105,17 +105,47 @@ const TimerContainer = (props) => {
 };
 
 const TimerCard = (props) => {
-  const [secondsState, setSeconds] = useLocalStorage(props.id.toString(), {"seconds": 0, "isStarted": false});
+  const [timerState, setTimer] = React.useState(() => {
+    const timer = window.localStorage.getItem(props.id.toString());
+    if (timer) {
+      return JSON.parse(timer);
+    } else {
+      const newTimer = {"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false};
+      window.localStorage.setItem(props.id.toString(), JSON.stringify(newTimer));
+      return newTimer;
+    }
+    //return timer ? JSON.parse(timer) : {"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false};
+  });//useLocalStorage(props.id.toString(), {"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false});
 
   let interval;
-  const tick = () => setSeconds({"seconds": parseInt(secondsState.seconds) + 1, "isStarted": secondsState.isStarted});
+  const tick = () => setTimer(() => {
+    const timer = JSON.parse(window.localStorage.getItem(props.id.toString()));
+    const tickedTimer = timer ? {
+      "lastTicked": Math.floor(Date.now() / 1000), 
+      "seconds": timer.lastTicked === 0 ? parseInt(timer.seconds) + 1 : 
+          timer.wasPaused ? parseInt(timer.seconds) : 
+              parseInt(timer.seconds) + (Math.floor(Date.now() / 1000) - timer.lastTicked), 
+      "wasPaused": timer.wasPaused, 
+      "isStarted": timer.isStarted
+    } :
+    {
+      "lastTicked": Math.floor(Date.now() / 1000), 
+      "seconds": parseInt(timer.seconds) + 1,
+      "wasPaused": false, 
+      "isStarted": false
+    }
+
+    window.localStorage.setItem(props.id.toString(), JSON.stringify(tickedTimer));
+    return tickedTimer;
+  });
   
   React.useEffect(() => {
-    if (secondsState.isStarted) {
+    if (timerState.isStarted) {
       interval = setInterval(() => tick(), 1000);
     }
 
     return () => {
+      console.log('unmount');
       clearInterval(interval);
     }
   });
@@ -132,12 +162,23 @@ const TimerCard = (props) => {
   });
 
   const handleTimerReset = (id) => {
-    setSeconds({"seconds": 0, "isStarted": false});
+    setTimer(() => {
+      const resetTimer = {"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false};
+      window.localStorage.setItem(id.toString(), JSON.stringify(resetTimer));
+      return resetTimer;
+    });
     clearInterval(interval);
   }
 
   handleTimerPlayPause = (id) => {
-    setSeconds({"seconds": parseInt(secondsState.seconds), "isStarted": !secondsState.isStarted});
+    const timer = JSON.parse(window.localStorage.getItem(id.toString()));
+    console.log(timer);
+    const wasPaused = timer.wasPaused && !timer.isStarted;
+    const updatedTimer = {"lastTicked": Math.floor(Date.now() / 1000) , "seconds": parseInt(timer.seconds), "wasPaused": wasPaused, "isStarted": !timer.isStarted}
+    setTimer(() => {
+      window.localStorage.setItem(id.toString(), JSON.stringify(updatedTimer));
+      return updatedTimer;
+    });
   }
 
   const getTimeFromSeconds = (totalSeconds) => {
@@ -173,11 +214,11 @@ const TimerCard = (props) => {
             <div className="timer-name">{props.name}</div>
           }
           <div className='timer'>
-            {getTimeFromSeconds(parseInt(secondsState.seconds))}
+            {getTimeFromSeconds(parseInt(timerState.seconds))}
           </div>
           <div className={`timer-controls ${props.name ? '' : 'hide'}`}>
-            <i id={`play-${props.id}`} onClick={() => handleTimerPlayPause(props.id)} className={`fas ${secondsState.isStarted ? 'fa-pause-circle play-button' : 'fa-play-circle play-button'}`}></i>
-            <i id={`reset-${props.id}`} onClick={() => handleTimerReset(props.id)} className={`fas fa-redo reset-button ${secondsState.isStarted && secondsState.seconds > 0 ? '' : 'hide'}`}></i>
+            <i id={`play-${props.id}`} onClick={() => handleTimerPlayPause(props.id)} className={`fas ${timerState.isStarted ? 'fa-pause-circle play-button' : 'fa-play-circle play-button'}`}></i>
+            <i id={`reset-${props.id}`} onClick={() => handleTimerReset(props.id)} className={`fas fa-redo reset-button ${timerState.isStarted && timerState.seconds > 0 ? '' : 'hide'}`}></i>
           </div>
         </div>
       </div>
