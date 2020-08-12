@@ -140,12 +140,12 @@ const TimerCard = (props) => {
   });
   
   React.useEffect(() => {
-    if (timerState.isStarted) {
+    const timer = JSON.parse(window.localStorage.getItem(props.id.toString()));
+    if (timer.isStarted) {
       interval = setInterval(() => tick(), 1000);
     }
 
     return () => {
-      console.log('unmount');
       clearInterval(interval);
     }
   });
@@ -175,6 +175,7 @@ const TimerCard = (props) => {
     console.log(timer);
     const wasPaused = timer.wasPaused && !timer.isStarted;
     const updatedTimer = {"lastTicked": Math.floor(Date.now() / 1000) , "seconds": parseInt(timer.seconds), "wasPaused": wasPaused, "isStarted": !timer.isStarted}
+    console.log(updatedTimer);
     setTimer(() => {
       window.localStorage.setItem(id.toString(), JSON.stringify(updatedTimer));
       return updatedTimer;
