@@ -167,7 +167,8 @@ const TimerCard = (props) => {
     document.getElementById(`delete-${props.id}`).classList.remove('hide');
   }
 
-  const handleDeleteTimer = () => {    
+  const handleDeleteTimer = () => {
+    window.localStorage.removeItem(props.id);  
     props.handleDeleteTimer(props.id);
   }
 
