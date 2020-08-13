@@ -27,7 +27,6 @@ const useLocalStorage = (key, initialValue) => {
 
 const App = () => {
   const [timersState, setTimers] = useLocalStorage('timers', []);
-
   const [sequenceState, setSequence] = useLocalStorage('timerSequence', 1);
 
   const handleAddTimer = () => {
@@ -105,43 +104,22 @@ const TimerContainer = (props) => {
 };
 
 const TimerCard = (props) => {
-  const [timerState, setTimer] = React.useState(() => {
-    const timer = window.localStorage.getItem(props.id.toString());
-    if (timer) {
-      return JSON.parse(timer);
-    } else {
-      const newTimer = {"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false};
-      window.localStorage.setItem(props.id.toString(), JSON.stringify(newTimer));
-      return newTimer;
-    }
-    //return timer ? JSON.parse(timer) : {"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false};
-  });//useLocalStorage(props.id.toString(), {"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false});
+  const [timerState, setTimer] = useLocalStorage(props.id.toString(), {"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false});    
 
   let interval;
   const tick = () => setTimer(() => {
-    const timer = JSON.parse(window.localStorage.getItem(props.id.toString()));
-    const tickedTimer = timer ? {
+    return {
       "lastTicked": Math.floor(Date.now() / 1000), 
-      "seconds": timer.lastTicked === 0 ? parseInt(timer.seconds) + 1 : 
-          timer.wasPaused ? parseInt(timer.seconds) : 
-              parseInt(timer.seconds) + (Math.floor(Date.now() / 1000) - timer.lastTicked), 
-      "wasPaused": timer.wasPaused, 
-      "isStarted": timer.isStarted
-    } :
-    {
-      "lastTicked": Math.floor(Date.now() / 1000), 
-      "seconds": parseInt(timer.seconds) + 1,
-      "wasPaused": false, 
-      "isStarted": false
-    }
-
-    window.localStorage.setItem(props.id.toString(), JSON.stringify(tickedTimer));
-    return tickedTimer;
+      "seconds": timerState.lastTicked === 0 ? parseInt(timerState.seconds) + 1 : 
+          timerState.wasPaused ? parseInt(timerState.seconds) : 
+              parseInt(timerState.seconds) + (Math.floor(Date.now() / 1000) - timerState.lastTicked), 
+      "wasPaused": timerState.wasPaused, 
+      "isStarted": timerState.isStarted
+    };
   });
   
   React.useEffect(() => {
-    const timer = JSON.parse(window.localStorage.getItem(props.id.toString()));
-    if (timer.isStarted) {
+    if (timerState.isStarted) {
       interval = setInterval(() => tick(), 1000);
     }
 
@@ -161,25 +139,15 @@ const TimerCard = (props) => {
     }
   });
 
-  const handleTimerReset = (id) => {
-    setTimer(() => {
-      const resetTimer = {"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false};
-      window.localStorage.setItem(id.toString(), JSON.stringify(resetTimer));
-      return resetTimer;
-    });
+  const handleTimerReset = () => {
+    setTimer({"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false});
     clearInterval(interval);
   }
 
-  handleTimerPlayPause = (id) => {
-    const timer = JSON.parse(window.localStorage.getItem(id.toString()));
-    console.log(timer);
-    const wasPaused = timer.wasPaused && !timer.isStarted;
-    const updatedTimer = {"lastTicked": Math.floor(Date.now() / 1000) , "seconds": parseInt(timer.seconds), "wasPaused": wasPaused, "isStarted": !timer.isStarted}
-    console.log(updatedTimer);
-    setTimer(() => {
-      window.localStorage.setItem(id.toString(), JSON.stringify(updatedTimer));
-      return updatedTimer;
-    });
+  handleTimerPlayPause = () => {        
+    const wasPaused = timerState.wasPaused && !timerState.isStarted;
+    const updatedTimer = {"lastTicked": Math.floor(Date.now() / 1000) , "seconds": parseInt(timerState.seconds), "wasPaused": wasPaused, "isStarted": !timerState.isStarted}
+    setTimer(updatedTimer);
   }
 
   const getTimeFromSeconds = (totalSeconds) => {
@@ -199,9 +167,8 @@ const TimerCard = (props) => {
     document.getElementById(`delete-${props.id}`).classList.remove('hide');
   }
 
-  const handleDeleteTimer = (id) => {
-    window.localStorage.removeItem(id.toString());
-    props.handleDeleteTimer(id);
+  const handleDeleteTimer = () => {    
+    props.handleDeleteTimer(props.id);
   }
 
   return (
@@ -209,7 +176,7 @@ const TimerCard = (props) => {
       <div onMouseOver={handleCardOver} onMouseOut={handleCardOut} className="border-overlay">
         <div className="border">
           <i id={`deleteBack-${props.id}`} className="fas fa-circle delete-background hide"></i>
-          <i onClick={() => handleDeleteTimer(props.id)} id={`delete-${props.id}`} className="fas fa-times-circle delete-button hide"></i>
+          <i onClick={handleDeleteTimer} id={`delete-${props.id}`} className="fas fa-times-circle delete-button hide"></i>
           {props.name === '' ? 
             <input id={props.id} placeholder="What are you timing?" className="name-input" type='text' /> :
             <div className="timer-name">{props.name}</div>
@@ -218,7 +185,7 @@ const TimerCard = (props) => {
             {getTimeFromSeconds(parseInt(timerState.seconds))}
           </div>
           <div className={`timer-controls ${props.name ? '' : 'hide'}`}>
-            <i id={`play-${props.id}`} onClick={() => handleTimerPlayPause(props.id)} className={`fas ${timerState.isStarted ? 'fa-pause-circle play-button' : 'fa-play-circle play-button'}`}></i>
+            <i id={`play-${props.id}`} onClick={handleTimerPlayPause} className={`fas ${timerState.isStarted ? 'fa-pause-circle play-button' : 'fa-play-circle play-button'}`}></i>
             <i id={`reset-${props.id}`} onClick={() => handleTimerReset(props.id)} className={`fas fa-redo reset-button ${timerState.isStarted && timerState.seconds > 0 ? '' : 'hide'}`}></i>
           </div>
         </div>
