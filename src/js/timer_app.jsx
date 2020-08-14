@@ -144,7 +144,7 @@ const TimerCard = (props) => {
     clearInterval(interval);
   }
 
-  handleTimerPlayPause = () => {        
+  const handleTimerPlayPause = () => {        
     const wasPaused = timerState.wasPaused && !timerState.isStarted;
     const updatedTimer = {"lastTicked": Math.floor(Date.now() / 1000) , "seconds": parseInt(timerState.seconds), "wasPaused": wasPaused, "isStarted": !timerState.isStarted}
     setTimer(updatedTimer);
@@ -187,7 +187,7 @@ const TimerCard = (props) => {
           </div>
           <div className={`timer-controls ${props.name ? '' : 'hide'}`}>
             <i id={`play-${props.id}`} onClick={handleTimerPlayPause} className={`fas ${timerState.isStarted ? 'fa-pause-circle play-button' : 'fa-play-circle play-button'}`}></i>
-            <i id={`reset-${props.id}`} onClick={() => handleTimerReset(props.id)} className={`fas fa-redo reset-button ${timerState.isStarted && timerState.seconds > 0 ? '' : 'hide'}`}></i>
+            <i id={`reset-${props.id}`} onClick={handleTimerReset} className={`fas fa-redo reset-button ${timerState.isStarted && timerState.seconds > 0 ? '' : 'hide'}`}></i>
           </div>
         </div>
       </div>
