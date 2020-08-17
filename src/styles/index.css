@@ -87,6 +87,14 @@ main {
     white-space: nowrap;
 }
 
+.name-content {
+    cursor: pointer;
+}
+
+.name-content:hover {
+    font-weight: 650;
+}
+
 .timer {
     text-align: center;
     height: 40%;

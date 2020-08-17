@@ -33,30 +33,34 @@ const App = () => {
     setTimers([{
       id: sequenceState,
       name: "",
-      status: ""
+      status: "",
+      isEdit: true
     }].concat(timersState));
     
     setSequence(sequenceState + 1);
   };
 
+  const handleEditTimer = (id) => {
+    const timers = timersState.slice();
+    const idx = timers.findIndex((t) => t.id === id);
+    timers[idx].isEdit = true;
+    
+    setTimers(timers);
+  }
+
   const handleSubmitName = (timerName, id) => {
     const timers = timersState.slice();
-    timers.forEach(element => {
-      if (element.id === id) {
-        element.name = timerName;
-      }
-    });
+    const idx = timers.findIndex((t) => t.id === id);
+    timers[idx].name = timerName;
+    timers[idx].isEdit = false;
     
     setTimers(timers);
   };
 
   const handleDeleteTimer = (id) => {
     const timers = timersState.slice();
-    timers.forEach((element, idx) => {
-      if (element.id === id) {
-        let del = timers.splice(idx, 1);
-      }
-    });
+    const idx = timers.findIndex((t) => t.id === id);
+    timers.splice(idx, 1);
 
     setTimers(timers);
   }
@@ -68,6 +72,7 @@ const App = () => {
         timers={timersState} 
         handleSubmitName={handleSubmitName} 
         handleDeleteTimer={handleDeleteTimer}
+        handleEditTimer={handleEditTimer}
       /> 
     </div>
   );
@@ -98,6 +103,7 @@ const TimerContainer = (props) => {
           {...prop} 
           handleSubmitName={props.handleSubmitName} 
           handleDeleteTimer={props.handleDeleteTimer}
+          handleEditTimer={props.handleEditTimer}
           /> })}
     </div>
   );
@@ -132,10 +138,6 @@ const TimerCard = (props) => {
     const nameInput = document.getElementById(props.id);
     if (nameInput !== null) {
       nameInput.focus();
-      nameInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') props.handleSubmitName(nameInput.value, props.id);
-        document.getElementById(`play-${props.id}`).focus();
-      });
     }
   });
 
@@ -172,22 +174,32 @@ const TimerCard = (props) => {
     props.handleDeleteTimer(props.id);
   }
 
+  const handleNameClick = () => {
+    props.handleEditTimer(props.id);
+  }
+
+  const handleNameKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      props.handleSubmitName(e.target.value, props.id);
+    } 
+  }
+
   return (
     <div className="timer-card">
       <div onMouseOver={handleCardOver} onMouseOut={handleCardOut} className="border-overlay">
         <div className="border">
           <i id={`deleteBack-${props.id}`} className="fas fa-circle delete-background hide"></i>
           <i onClick={handleDeleteTimer} id={`delete-${props.id}`} className="fas fa-times-circle delete-button hide"></i>
-          {props.name === '' ? 
-            <input id={props.id} placeholder="What are you timing?" className="name-input" type='text' /> :
-            <div className="timer-name">{props.name}</div>
+          {props.isEdit ? 
+            <input onKeyPress={handleNameKeyPress} id={props.id} defaultValue={props.name} placeholder="What are you timing?" className="name-input" type='text' /> :
+            <div title="Click to edit" className="timer-name"><span onClick={handleNameClick} className="name-content">{props.name}</span></div>
           }
           <div className='timer'>
             {getTimeFromSeconds(parseInt(timerState.seconds))}
           </div>
           <div className={`timer-controls ${props.name ? '' : 'hide'}`}>
             <i id={`play-${props.id}`} onClick={handleTimerPlayPause} className={`fas ${timerState.isStarted ? 'fa-pause-circle play-button' : 'fa-play-circle play-button'}`}></i>
-            <i id={`reset-${props.id}`} onClick={handleTimerReset} className={`fas fa-redo reset-button ${timerState.isStarted && timerState.seconds > 0 ? '' : 'hide'}`}></i>
+            <i id={`reset-${props.id}`} onClick={handleTimerReset} className={`fas fa-redo reset-button ${timerState.seconds > 0  ? '' : 'hide'}`}></i>
           </div>
         </div>
       </div>
