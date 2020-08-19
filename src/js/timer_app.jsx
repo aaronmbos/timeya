@@ -115,12 +115,11 @@ const TimerCard = (props) => {
   let interval;
   const tick = () => setTimer(() => {
     return {
+      ...timerState,
       "lastTicked": Math.floor(Date.now() / 1000), 
       "seconds": timerState.lastTicked === 0 ? parseInt(timerState.seconds) + 1 : 
           timerState.wasPaused ? parseInt(timerState.seconds) : 
               parseInt(timerState.seconds) + (Math.floor(Date.now() / 1000) - timerState.lastTicked), 
-      "wasPaused": timerState.wasPaused, 
-      "isStarted": timerState.isStarted
     };
   });
   
@@ -142,14 +141,14 @@ const TimerCard = (props) => {
   });
 
   const handleTimerReset = () => {
-    setTimer({"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false});
+    setTimer({"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false, "isEditable": false});
     clearInterval(interval);
   }
 
   const handleTimerPlayPause = () => {        
     const wasPaused = timerState.wasPaused && !timerState.isStarted;
-    const updatedTimer = {"lastTicked": Math.floor(Date.now() / 1000) , "seconds": parseInt(timerState.seconds), "wasPaused": wasPaused, "isStarted": !timerState.isStarted}
-    setTimer(updatedTimer);
+    const newTimer = {...timerState, "lastTicked": Math.floor(Date.now() / 1000), "wasPaused": wasPaused, "isStarted": !timerState.isStarted}
+    setTimer(newTimer);
   }
 
   const getTimeFromSeconds = (totalSeconds) => {
@@ -184,6 +183,14 @@ const TimerCard = (props) => {
     } 
   }
 
+  const handleTimerClick = () => {
+    setTimer({...timerState, "isEditable": true})
+  }
+
+  const handleEditCancel = () => {
+    setTimer({...timerState, "isEditable": false})
+  }
+
   return (
     <div className="timer-card">
       <div onMouseOver={handleCardOver} onMouseOut={handleCardOut} className="border-overlay">
@@ -195,12 +202,27 @@ const TimerCard = (props) => {
             <div title="Click to edit" className="timer-name"><span onClick={handleNameClick} className="name-content">{props.name}</span></div>
           }
           <div className='timer'>
-            {getTimeFromSeconds(parseInt(timerState.seconds))}
+            {timerState.isEditable ? 
+              <div className='timer-edit-container'>
+                <input className='timer-edit'type='number' /> : <input className='timer-edit' type='number' /> : <input className='timer-edit' type='number' />
+              </div> :
+              <span onClick={handleTimerClick} className='timer-click'>
+                {getTimeFromSeconds(parseInt(timerState.seconds))}
+              </span>
+            }
+            
           </div>
-          <div className={`timer-controls ${props.name ? '' : 'hide'}`}>
-            <i id={`play-${props.id}`} onClick={handleTimerPlayPause} className={`fas ${timerState.isStarted ? 'fa-pause-circle play-button' : 'fa-play-circle play-button'}`}></i>
-            <i id={`reset-${props.id}`} onClick={handleTimerReset} className={`fas fa-redo reset-button ${timerState.seconds > 0  ? '' : 'hide'}`}></i>
+          {
+            timerState.isEditable ?
+            <div className='edit-controls'>
+              <button className="button is-success is-small">Save</button>
+              <button onClick={handleEditCancel} className="button is-danger is-small">Cancel</button>
+            </div> :
+            <div className={`timer-controls ${props.name ? '' : 'hide'}`}>
+              <i id={`play-${props.id}`} onClick={handleTimerPlayPause} className={`fas ${timerState.isStarted ? 'fa-pause-circle play-button' : 'fa-play-circle play-button'}`}></i>
+              <i id={`reset-${props.id}`} onClick={handleTimerReset} className={`fas fa-redo reset-button ${timerState.seconds > 0  ? '' : 'hide'}`}></i>
           </div>
+          }
         </div>
       </div>
     </div>

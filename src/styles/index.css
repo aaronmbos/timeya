@@ -165,3 +165,39 @@ main {
     z-index: 10;
     cursor: pointer;
 }
+
+.timer-click {
+    cursor: pointer;
+}
+
+.timer-click:hover {
+    font-weight: 450;
+}
+
+.timer-edit {
+    max-width: 20%;
+    height: 80%;
+    align-self: center;
+    flex: 1;
+    border-radius: 5px;
+    border: 1px solid gray;
+    text-align: center;
+    font-size: 2rem;
+}
+
+.timer-edit-container {
+    height: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.edit-controls {
+    justify-content: center;
+    display: flex;
+    height: 30%;
+}
+
+.edit-controls > .button {
+    align-self: center;
+    margin: 0 .5rem;
+}
