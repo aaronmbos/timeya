@@ -110,7 +110,7 @@ const TimerContainer = (props) => {
 };
 
 const TimerCard = (props) => {
-  const [timerState, setTimer] = useLocalStorage(props.id.toString(), {"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false});    
+  const [timerState, setTimer] = useLocalStorage(props.id.toString(), {"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false, "isEditable": false, "editSeconds": 0});    
 
   let interval;
   const tick = () => setTimer(() => {
@@ -141,7 +141,7 @@ const TimerCard = (props) => {
   });
 
   const handleTimerReset = () => {
-    setTimer({"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false, "isEditable": false});
+    setTimer({"lastTicked": 0, "seconds": 0, "isStarted": false, "wasPaused": false, "isEditable": false, "editSeconds": 0});
     clearInterval(interval);
   }
 
@@ -151,12 +151,16 @@ const TimerCard = (props) => {
     setTimer(newTimer);
   }
 
-  const getTimeFromSeconds = (totalSeconds) => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor(totalSeconds % 3600 / 60);
-    const seconds = totalSeconds % 3600 % 60;
+  const getTimeFromSeconds = () => {
+    const hours = getHours(timerState.seconds);
+    const minutes = getMinutes(timerState.seconds);
+    const seconds = getSeconds(timerState.seconds);
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }
+
+  const getSeconds = (totalSeconds) => totalSeconds % 3600 % 60;
+  const getMinutes = (totalSeconds) => Math.floor(totalSeconds % 3600 / 60);
+  const getHours = (totalSeconds) => Math.floor(totalSeconds / 3600);
 
   const handleCardOut = () => {
     document.getElementById(`deleteBack-${props.id}`).classList.add('hide');
@@ -184,11 +188,24 @@ const TimerCard = (props) => {
   }
 
   const handleTimerClick = () => {
-    setTimer({...timerState, "isEditable": true})
+    setTimer({...timerState, "isEditable": true, "editSeconds": timerState.seconds})
   }
 
   const handleEditCancel = () => {
-    setTimer({...timerState, "isEditable": false})
+    setTimer({...timerState, "isEditable": false, "editSeconds": 0})
+  }
+
+  const handleEditSave = () => {
+    const hours = parseInt(document.getElementById(`hours${props.id}`).value);
+    const min = parseInt(document.getElementById(`min${props.id}`).value);
+    const sec = parseInt(document.getElementById(`sec${props.id}`).value);
+
+    if ((hours < 0) ||
+    (min < 0 || min > 59) ||
+    (sec < 0 || sec > 59)) { return; }
+
+    const totalSeconds = sec + (min * 60) + (hours * 3600);
+    setTimer({...timerState, "seconds": totalSeconds, "editSeconds": 0, "isEditable": false});
   }
 
   return (
@@ -204,18 +221,19 @@ const TimerCard = (props) => {
           <div className='timer'>
             {timerState.isEditable ? 
               <div className='timer-edit-container'>
-                <input className='timer-edit'type='number' /> : <input className='timer-edit' type='number' /> : <input className='timer-edit' type='number' />
+                <input id={`hours${props.id}`} min='0' className='timer-edit'type='number' defaultValue={getHours(timerState.editSeconds)} /> : 
+                <input id={`min${props.id}`} min='0' max='59' className='timer-edit' type='number' defaultValue={getMinutes(timerState.editSeconds)} /> : 
+                <input id={`sec${props.id}`} min='0' max='59' className='timer-edit' type='number' defaultValue={getSeconds(timerState.editSeconds)}/>
               </div> :
               <span onClick={handleTimerClick} className='timer-click'>
-                {getTimeFromSeconds(parseInt(timerState.seconds))}
+                {getTimeFromSeconds()}
               </span>
             }
-            
           </div>
           {
             timerState.isEditable ?
             <div className='edit-controls'>
-              <button className="button is-success is-small">Save</button>
+              <button onClick={handleEditSave} className="button is-success is-small">Save</button>
               <button onClick={handleEditCancel} className="button is-danger is-small">Cancel</button>
             </div> :
             <div className={`timer-controls ${props.name ? '' : 'hide'}`}>

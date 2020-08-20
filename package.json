@@ -1,7 +1,8 @@
 {
     "name": "time-ya",
     "scripts": {
-        "watch": "npx babel src/js --watch --out-file dist/app.js"
+        "watch": "npx babel src/js --watch --out-file dist/app.js",
+        "build": "bash ./build.sh"
     },
     "devDependencies": {
         "@babel/cli": "^7.10.1",
