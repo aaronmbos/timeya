@@ -4,5 +4,7 @@ rm -r dist/*
 npx babel src/js --out-file dist/js/app.js
 # move css
 cp -R src/styles dist/styles
-#move html
+# move html
 cp src/index.html dist
+# move favicon
+cp favicon.ico dist
