@@ -80,16 +80,27 @@ const App = () => {
 
 const ActionRow = (props) => {
   return (
-    <div className="action-row buttons are-small">
-      <button
-        className="button is-success is-outlined"
-        onClick={() => props.handleAddTimer()}
-      >
-        <span className="icon is-small">
-          <i className="fas fa-plus"></i>
-        </span>
-        <span>New Timer</span>
-      </button>
+    <div className="action-row">
+      <div id='new-timer-dropdown' className='dropdown'>
+        <div className='dropdown-trigger'>
+          <button
+            onClick={() => document.getElementById('new-timer-dropdown').classList.toggle('is-active')}
+            className="button is-small is-success" aria-haspopup="true" aria-controls="dropdown-menu"
+          >
+            <span>New Timer</span>
+            <span class="icon is-small">
+              <i class="fas fa-angle-down" aria-hidden="true"></i>
+            </span>
+          </button>
+        </div>
+        <div className='dropdown-menu' role='menu'>
+          <div onClick={() => document.getElementById(`new-timer-dropdown`).classList.toggle('is-active')} className='dropdown-content'>
+            <a onClick={props.handleAddTimer} class="dropdown-item">
+              Count Up
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -162,29 +173,9 @@ const TimerCard = (props) => {
   const getMinutes = (totalSeconds) => Math.floor(totalSeconds % 3600 / 60);
   const getHours = (totalSeconds) => Math.floor(totalSeconds / 3600);
 
-  const handleCardOut = () => {
-    document.getElementById(`deleteBack-${props.id}`).classList.add('hide');
-    document.getElementById(`delete-${props.id}`).classList.add('hide');
-  }
-
-  const handleCardOver = () => {
-    document.getElementById(`deleteBack-${props.id}`).classList.remove('hide');
-    document.getElementById(`delete-${props.id}`).classList.remove('hide');
-  }
-
   const handleDeleteTimer = () => {
     window.localStorage.removeItem(props.id);  
     props.handleDeleteTimer(props.id);
-  }
-
-  const handleNameClick = () => {
-    props.handleEditTimer(props.id);
-  }
-
-  const handleNameKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      props.handleSubmitName(e.target.value, props.id);
-    } 
   }
 
   const handleTimerClick = () => {
@@ -210,41 +201,67 @@ const TimerCard = (props) => {
 
   return (
     <div className="timer-card">
-      <div onMouseOver={handleCardOver} onMouseOut={handleCardOut} className="border-overlay">
-        <div className="border">
-          <i id={`deleteBack-${props.id}`} className="fas fa-circle delete-background hide"></i>
-          <i onClick={handleDeleteTimer} id={`delete-${props.id}`} className="fas fa-times-circle delete-button hide"></i>
-          {props.isEdit ? 
-            <input onKeyPress={handleNameKeyPress} id={props.id} defaultValue={props.name} placeholder="What are you timing?" className="name-input" type='text' /> :
-            <div title="Click to edit" className="timer-name"><span onClick={handleNameClick} className="name-content">{props.name}</span></div>
-          }
-          <div className='timer'>
-            {timerState.isEditable ? 
-              <div className='timer-edit-container'>
-                <input id={`hours${props.id}`} min='0' className='timer-edit'type='number' defaultValue={getHours(timerState.editSeconds)} /> : 
-                <input id={`min${props.id}`} min='0' max='59' className='timer-edit' type='number' defaultValue={getMinutes(timerState.editSeconds)} /> : 
-                <input id={`sec${props.id}`} min='0' max='59' className='timer-edit' type='number' defaultValue={getSeconds(timerState.editSeconds)}/>
-              </div> :
-              <span onClick={handleTimerClick} className='timer-click'>
-                {getTimeFromSeconds()}
-              </span>
-            }
-          </div>
-          {
-            timerState.isEditable ?
-            <div className='edit-controls'>
-              <button onClick={handleEditSave} className="button is-success is-small">Save</button>
-              <button onClick={handleEditCancel} className="button is-danger is-small">Cancel</button>
+      <div className="border">
+        <i onClick={handleDeleteTimer} id={`delete-${props.id}`} className="fas fa-times delete-button"></i>
+        <TimerCardHeader 
+          name={props.name} 
+          isEdit={props.isEdit} 
+          id={props.id} 
+          handleEditTimer={props.handleEditTimer} handleSubmitName={props.handleSubmitName} />
+        <div className='timer'>
+          {timerState.isEditable ? 
+            <div className='timer-edit-container'>
+              <input id={`hours${props.id}`} min='0' className='timer-edit'type='number' defaultValue={getHours(timerState.editSeconds)} /> : 
+              <input id={`min${props.id}`} min='0' max='59' className='timer-edit' type='number' defaultValue={getMinutes(timerState.editSeconds)} /> : 
+              <input id={`sec${props.id}`} min='0' max='59' className='timer-edit' type='number' defaultValue={getSeconds(timerState.editSeconds)}/>
             </div> :
-            <div className={`timer-controls ${props.name ? '' : 'hide'}`}>
-              <i id={`play-${props.id}`} onClick={handleTimerPlayPause} className={`fas ${timerState.isStarted ? 'fa-pause-circle play-button' : 'fa-play-circle play-button'}`}></i>
-              <i id={`reset-${props.id}`} onClick={handleTimerReset} className={`fas fa-redo reset-button ${timerState.seconds > 0  ? '' : 'hide'}`}></i>
-          </div>
+            <span onClick={handleTimerClick} className='timer-click'>
+              {getTimeFromSeconds()}
+            </span>
           }
+        </div> 
+        {
+          timerState.isEditable ?
+          <div className='edit-controls'>
+            <button onClick={handleEditSave} className="button is-success is-small">Save</button>
+            <button onClick={handleEditCancel} className="button is-danger is-small">Cancel</button>
+          </div> :
+          <div className={`timer-controls ${props.name ? '' : 'hide'}`}>
+            <i id={`play-${props.id}`} onClick={handleTimerPlayPause} className={`fas ${timerState.isStarted ? 'fa-pause-circle play-button' : 'fa-play-circle play-button'}`}></i>
+            <i id={`reset-${props.id}`} onClick={handleTimerReset} className={`fas fa-redo reset-button ${timerState.seconds > 0  ? '' : 'hide'}`}></i>
         </div>
+        }
       </div>
     </div>
   );
 };
+
+const TimerCardHeader = (props) => {
+  const handleEditInputBlur = (e) => {
+    if (e.target.value.length > 0) {
+      props.handleSubmitName(e.target.value, props.id);
+    }
+  }
+
+  const handleNameClick = () => {
+    props.handleEditTimer(props.id);
+  }
+
+  const handleNameKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      if (e.target.value.length > 0) {
+        props.handleSubmitName(e.target.value, props.id);
+      }
+    } 
+  }
+
+  return (
+    props.isEdit ? 
+    <div className='edit-input-control'>
+      <input onBlur={handleEditInputBlur} onKeyPress={handleNameKeyPress} id={props.id} defaultValue={props.name} placeholder="What are you timing?" className="input edit-input" type='text' /> 
+    </div> :
+    <div title="Click to edit" className="timer-name"><span onClick={handleNameClick} className="name-content">{props.name}</span></div>
+  )
+}
 
 ReactDOM.render(<App />, document.getElementById("app"));
