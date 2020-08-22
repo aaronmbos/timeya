@@ -120,7 +120,7 @@ main {
 }
 
 .timer-click:hover {
-    font-weight: 450;
+    color: darkslategrey;
 }
 
 .timer-edit {
@@ -154,4 +154,8 @@ main {
 .card-content {
     text-align: center;
     font-size: 2.5rem;
+}
+
+div.card.is-complete {
+    border: 1.5px solid red;
 }
