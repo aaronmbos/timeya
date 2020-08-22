@@ -155,7 +155,7 @@ const TimerCard = (props) => {
   React.useEffect(() => {
     if (timerState.isStarted) {
       if (props.type === 'countdown') {
-        if (timerState.seconds == 0 && timerState.isStarted) {
+        if (timerState.seconds <= 0 && timerState.isStarted) {
           setTimer({'lastTicked': 0, 'seconds': 0, 'isStarted': false, 'wasPaused': false, 'isEditable': false, 'editSeconds': 0, 'isComplete': true});
         }
         interval = setInterval(() => countdownTick(), 1000);
