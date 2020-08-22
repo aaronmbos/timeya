@@ -173,11 +173,6 @@ const TimerCard = (props) => {
   const getMinutes = (totalSeconds) => Math.floor(totalSeconds % 3600 / 60);
   const getHours = (totalSeconds) => Math.floor(totalSeconds / 3600);
 
-  const handleDeleteTimer = () => {
-    window.localStorage.removeItem(props.id);  
-    props.handleDeleteTimer(props.id);
-  }
-
   const handleTimerClick = () => {
     setTimer({...timerState, "isEditable": true, "editSeconds": timerState.seconds})
   }
@@ -201,34 +196,39 @@ const TimerCard = (props) => {
 
   return (
     <div className="timer-card">
-      <div className="border">
-        <i onClick={handleDeleteTimer} id={`delete-${props.id}`} className="fas fa-times delete-button"></i>
+      <div className="card">
         <TimerCardHeader 
           name={props.name} 
           isEdit={props.isEdit} 
           id={props.id} 
-          handleEditTimer={props.handleEditTimer} handleSubmitName={props.handleSubmitName} />
-        <div className='timer'>
+          handleEditTimer={props.handleEditTimer} handleSubmitName={props.handleSubmitName} handleDeleteTimer={props.handleDeleteTimer} />
+        <div className='card-content'>
           {timerState.isEditable ? 
-            <div className='timer-edit-container'>
+            <div className='timer-edit-container content'>
               <input id={`hours${props.id}`} min='0' className='timer-edit'type='number' defaultValue={getHours(timerState.editSeconds)} /> : 
               <input id={`min${props.id}`} min='0' max='59' className='timer-edit' type='number' defaultValue={getMinutes(timerState.editSeconds)} /> : 
               <input id={`sec${props.id}`} min='0' max='59' className='timer-edit' type='number' defaultValue={getSeconds(timerState.editSeconds)}/>
             </div> :
-            <span onClick={handleTimerClick} className='timer-click'>
+            <span onClick={handleTimerClick} className='timer-click content is-centered'>
               {getTimeFromSeconds()}
             </span>
           }
         </div> 
         {
           timerState.isEditable ?
-          <div className='edit-controls'>
+          <div className='edit-controls card-footer'>
+            <div className='card-footer-item'>
             <button onClick={handleEditSave} className="button is-success is-small">Save</button>
+            </div>
+            <div className='card-footer-item'>
             <button onClick={handleEditCancel} className="button is-danger is-small">Cancel</button>
+            </div>
           </div> :
-          <div className={`timer-controls ${props.name ? '' : 'hide'}`}>
+          <div className={`card-footer ${props.name ? '' : 'hide'}`}>
+            <div className='card-footer-item'>
             <i id={`play-${props.id}`} onClick={handleTimerPlayPause} className={`fas ${timerState.isStarted ? 'fa-pause-circle play-button' : 'fa-play-circle play-button'}`}></i>
             <i id={`reset-${props.id}`} onClick={handleTimerReset} className={`fas fa-redo reset-button ${timerState.seconds > 0  ? '' : 'hide'}`}></i>
+            </div>
         </div>
         }
       </div>
@@ -255,12 +255,24 @@ const TimerCardHeader = (props) => {
     } 
   }
 
+  const handleDeleteTimer = () => {
+    window.localStorage.removeItem(props.id);  
+    props.handleDeleteTimer(props.id);
+  }
+
   return (
-    props.isEdit ? 
-    <div className='edit-input-control'>
-      <input onBlur={handleEditInputBlur} onKeyPress={handleNameKeyPress} id={props.id} defaultValue={props.name} placeholder="What are you timing?" className="input edit-input" type='text' /> 
-    </div> :
-    <div title="Click to edit" className="timer-name"><span onClick={handleNameClick} className="name-content">{props.name}</span></div>
+    <header className='card-header'>
+      {
+        props.isEdit ? 
+        <div className='edit-input-control'>
+          <input onBlur={handleEditInputBlur} onKeyPress={handleNameKeyPress} id={props.id} defaultValue={props.name} placeholder="What are you timing?" className="input edit-input card-header-title" type='text' /> 
+        </div> :
+        <div className="card-header-title"><span title={`Click to edit - ${props.name}`} onClick={handleNameClick} className="name-content">{props.name}</span></div>
+      }
+      <span class="icon">
+        <i aria-hidden='true' onClick={handleDeleteTimer} id={`delete-${props.id}`} className="fas fa-times delete-button"></i>
+      </span>
+    </header>
   )
 }
 

@@ -29,17 +29,6 @@ main {
     padding: 15px;
 }
 
-.border {
-    border-radius: 5%;
-    border: 1px solid lightgray;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    -webkit-box-shadow: 0 0 5px 2px #ccc;
-    -moz-box-shadow: 0 0 5px 2px #ccc;
-    box-shadow: 0 0 5px 2px #ccc;
-}
-
 .edit-input-control {
     width: 82%;
     padding: 8px 0 0 10px;
@@ -51,47 +40,25 @@ main {
     justify-content: flex-start;
 }
 
-.close-icon {
-    position: absolute;
-    right: 0;
-    top: 0;
-    color: palevioletred;
-    cursor: pointer;
-}
-
-.timer-name {
-    padding: 14px 0 0 10px;
-    font-size: 1.3rem;
-    font-weight: 600;
-    width: 280px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+@media screen and (max-width: 639px) {
+    #timer-container {
+        justify-content: center;
+    }
 }
 
 .name-content {
     cursor: pointer;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.card-header-title {
+    overflow: hidden;
 }
 
 .name-content:hover {
-    font-weight: 600;
-}
-
-.timer {
-    text-align: center;
-    height: 40%;
-    border-top: 1px solid slategray;
-    border-bottom: 1px solid slategray;
-    font-size: 3rem;
-    margin-top: 5%;
-    padding-top: 2%;
-}
-
-.timer-controls {
-    display: flex;
-    align-items: center;
-    height: 30%;
-    justify-content: center;
+    color: darkslategrey;
 }
 
 .play-button {
@@ -127,11 +94,10 @@ main {
 
 .delete-button {
     position: absolute;
-    right: 7px;
-    top: 6px;
+    right: 6px;
+    top: 5px;
     color: #ff4b4b;
     font-size: 1.1rem;
-    z-index: 11;
     cursor: pointer;
 }
 
@@ -183,4 +149,9 @@ main {
 .edit-controls > .button {
     align-self: center;
     margin: 0 .5rem;
+}
+
+.card-content {
+    text-align: center;
+    font-size: 2.5rem;
 }
