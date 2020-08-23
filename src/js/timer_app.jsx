@@ -67,7 +67,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div style={{'minWidth': '100%'}}>
       <ActionRow handleAddTimer={handleAddTimer} />
       <TimerContainer 
         timers={timersState} 
