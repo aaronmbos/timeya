@@ -1,16 +1,17 @@
 import useLocalStorage from "../hooks/useLocalStorage";
+import TimerCard from "./TimerCard";
 
 enum TimerType {
   Countup,
-  Countdown
+  Countdown,
 }
 
 interface Timer {
-  id: number,
-  name: string,
-  isTimeSet: boolean,
-  isEdit: boolean,
-  timerType: TimerType
+  id: number;
+  name: string;
+  isTimeSet: boolean;
+  isEdit: boolean;
+  timerType: TimerType;
 }
 
 export default function TimerContainer() {
@@ -68,7 +69,8 @@ export default function TimerContainer() {
 
   return (
     <div style={{ minWidth: "100%" }}>
-      { /*<ActionRow handleAddTimer={handleAddTimer} />
+      <TimerCard></TimerCard>
+      {/*<ActionRow handleAddTimer={handleAddTimer} />
       <TimerContainer
         timers={timersState}
         handleSubmitName={handleSubmitName}
@@ -78,5 +80,4 @@ export default function TimerContainer() {
       /> */}
     </div>
   );
-};
-
+}
