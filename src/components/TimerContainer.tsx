@@ -27,7 +27,7 @@ export default function TimerContainer() {
           name: "",
           isTimeSet: false,
           isEdit: true,
-          timerType: timerType,
+          type: timerType,
         },
       ].concat(timersState)
     );
@@ -86,14 +86,6 @@ export default function TimerContainer() {
           );
         })}
       </div>
-      {/*
-      <TimerContainer
-        timers={timersState}
-        handleSubmitName={handleSubmitName}
-        handleDeleteTimer={handleDeleteTimer}
-        handleEditTimer={handleEditTimer}
-        handleSaveTimer={handleSaveTimer}
-      /> */}
     </div>
   );
 }

@@ -4,6 +4,17 @@ import TimerCardContent from "./TimerCardContent";
 import TimerCardHeader from "./TimerCardHeader";
 import { TimerType } from "./TimerContainer";
 
+export interface ActiveTimer {
+  lastTicked: number;
+  seconds: number;
+  isStarted: boolean;
+  wasPaused: boolean;
+  isEditable: boolean;
+  editSeconds: number;
+  isComplete: boolean;
+  initialTime: number;
+}
+
 export interface TimerCardProps {
   id: number;
   name: string;
@@ -24,6 +35,8 @@ export default function TimerCard(props: TimerCardProps) {
     wasPaused: false,
     isEditable: props.type === TimerType.Countdown,
     editSeconds: 0,
+    isComplete: false,
+    initialTime: 0,
   });
 
   const interval = useRef<number>();
