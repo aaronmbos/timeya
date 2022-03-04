@@ -27,7 +27,6 @@ export default function TimerCardHeader(props: TimerCardHeaderProps) {
   };
 
   const handleNameKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(e);
     if (e.key === "Enter") {
       if (inputName) {
         props.handleSubmitName(inputName, props.id);

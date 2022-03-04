@@ -52,7 +52,6 @@ export default function TimerContainer() {
   };
 
   const handleSubmitName = (timerName: string, id: number) => {
-    console.log("test");
     const timers = timersState.slice();
     const idx = timers.findIndex((t: Timer) => t.id === id);
     timers[idx].name = timerName;
