@@ -1,17 +1,18 @@
 import useLocalStorage from "../hooks/useLocalStorage";
+import ActionRow from "./ActionRow";
 import TimerCard from "./TimerCard";
 
-enum TimerType {
+export enum TimerType {
   Countup,
   Countdown,
 }
 
-interface Timer {
+export interface Timer {
   id: number;
   name: string;
   isTimeSet: boolean;
   isEdit: boolean;
-  timerType: TimerType;
+  type: TimerType;
 }
 
 export default function TimerContainer() {
@@ -51,6 +52,7 @@ export default function TimerContainer() {
   };
 
   const handleSubmitName = (timerName: string, id: number) => {
+    console.log("test");
     const timers = timersState.slice();
     const idx = timers.findIndex((t: Timer) => t.id === id);
     timers[idx].name = timerName;
@@ -69,8 +71,23 @@ export default function TimerContainer() {
 
   return (
     <div style={{ minWidth: "100%" }}>
-      <TimerCard></TimerCard>
-      {/*<ActionRow handleAddTimer={handleAddTimer} />
+      <ActionRow handleAddTimer={handleAddTimer} />
+
+      <div id="timer-container">
+        {timersState.map((timer: Timer) => {
+          return (
+            <TimerCard
+              key={timer.id}
+              {...timer}
+              handleSubmitName={handleSubmitName}
+              handleDeleteTimer={handleDeleteTimer}
+              handleEditTimer={handleEditTimer}
+              handleSaveTimer={handleSaveTimer}
+            />
+          );
+        })}
+      </div>
+      {/*
       <TimerContainer
         timers={timersState}
         handleSubmitName={handleSubmitName}
