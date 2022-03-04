@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
 import TimerCardContent from "./TimerCardContent";
 import TimerCardHeader from "./TimerCardHeader";
@@ -26,7 +26,7 @@ export default function TimerCard(props: TimerCardProps) {
     editSeconds: 0,
   });
 
-  let interval: NodeJS.Timer;
+  const interval = useRef<number>();
   const tick = () =>
     setTimer(() => {
       return {
@@ -72,14 +72,14 @@ export default function TimerCard(props: TimerCardProps) {
             initialTime: timerState.initialTime,
           });
         }
-        interval = setInterval(() => countdownTick(), 1000);
+        interval.current = window.setInterval(() => countdownTick(), 1000);
       } else {
-        interval = setInterval(() => tick(), 1000);
+        interval.current = window.setInterval(() => tick(), 1000);
       }
     }
 
     return () => {
-      clearInterval(interval);
+      clearInterval(interval.current);
     };
   });
 
@@ -100,7 +100,7 @@ export default function TimerCard(props: TimerCardProps) {
       editSeconds: timerState.initialTime,
       initialTime: timerState.initialTime,
     });
-    clearInterval(interval);
+    clearInterval(interval.current);
   };
 
   const handleTimerPlayPause = () => {
