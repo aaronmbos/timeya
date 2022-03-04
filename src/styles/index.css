@@ -161,3 +161,11 @@ main {
 div.card.is-complete {
     border: 1.5px solid red;
 }
+
+.dropdown-item {
+    cursor: pointer;
+}
+
+span.dropdown-item:hover {
+    background-color: #f5f5f5;
+}

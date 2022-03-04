@@ -29,18 +29,18 @@ export default function ActionRow({ handleAddTimer }: ActionRowProps) {
         </div>
         <div className="dropdown-menu" role="menu">
           <div onClick={handleDropdownToggle} className="dropdown-content">
-            <a
+            <span
               onClick={() => handleAddTimer(TimerType.Countup)}
               className="dropdown-item"
             >
               Counting Up
-            </a>
-            <a
+            </span>
+            <span
               onClick={() => handleAddTimer(TimerType.Countdown)}
               className="dropdown-item"
             >
               Counting Down
-            </a>
+            </span>
           </div>
         </div>
       </div>
