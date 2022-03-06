@@ -2,7 +2,7 @@ import TimerContainer from "./components/TimerContainer";
 
 function App() {
   return (
-    <div className="App">
+    <div data-testid="app-div" className="App">
       <TimerContainer />
     </div>
   );
