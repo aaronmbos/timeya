@@ -47,10 +47,10 @@ export default function TimerCard(props: TimerCardProps) {
         lastTicked: Math.floor(Date.now() / 1000),
         seconds:
           timerState.lastTicked === 0
-            ? parseInt(timerState.seconds) + 1
+            ? timerState.seconds + 1
             : timerState.wasPaused
-            ? parseInt(timerState.seconds)
-            : parseInt(timerState.seconds) +
+            ? timerState.seconds
+            : timerState.seconds +
               (Math.floor(Date.now() / 1000) - timerState.lastTicked),
       };
     });
@@ -62,10 +62,10 @@ export default function TimerCard(props: TimerCardProps) {
         lastTicked: Math.floor(Date.now() / 1000),
         seconds:
           timerState.lastTicked === 0
-            ? parseInt(timerState.seconds) + 1
+            ? timerState.seconds + 1
             : timerState.wasPaused
-            ? parseInt(timerState.seconds)
-            : parseInt(timerState.seconds) +
+            ? timerState.seconds
+            : timerState.seconds +
               (timerState.lastTicked - Math.floor(Date.now() / 1000)),
       };
     });
@@ -112,6 +112,7 @@ export default function TimerCard(props: TimerCardProps) {
       isEditable: props.type === TimerType.Countdown,
       editSeconds: timerState.initialTime,
       initialTime: timerState.initialTime,
+      isComplete: false,
     });
     clearInterval(interval.current);
   };

@@ -16,7 +16,7 @@ export interface Timer {
 }
 
 export default function TimerContainer() {
-  const [timersState, setTimers] = useLocalStorage("timers", []);
+  const [timersState, setTimers] = useLocalStorage("timers", [] as Timer[]);
   const [sequenceState, setSequence] = useLocalStorage("timerSequence", 1);
 
   const handleAddTimer = (timerType: TimerType) => {

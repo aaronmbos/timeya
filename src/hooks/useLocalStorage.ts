@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { ActiveTimer } from "../components/TimerCard";
-import { Timer } from "../components/TimerContainer";
 
 // Found this to be super useful https://usehooks.com/useLocalStorage/
-export default function useLocalStorage(key : string, initialValue : Timer[] | number | ActiveTimer) {
+export default function useLocalStorage<T>(
+  key: string,
+  initialValue: T
+): [T, (value: T | ((a: T) => T)) => void] {
   const [storedValue, setStoredValue] = useState(() => {
     try {
       const item = window.localStorage.getItem(key);
@@ -15,7 +16,7 @@ export default function useLocalStorage(key : string, initialValue : Timer[] | n
   });
 
   // Return a wrapped version of useState's setter function that persists the new value to localStorage.
-  const setValue = (value: (a: Timer[] | number | ActiveTimer) => Timer[] | number | ActiveTimer) => {
+  const setValue = (value: T | ((a: T) => T)) => {
     try {
       // Allow value to be a function so we have same API as useState
       const valueToStore =
@@ -27,4 +28,4 @@ export default function useLocalStorage(key : string, initialValue : Timer[] | n
     }
   };
   return [storedValue, setValue];
-};
+}
