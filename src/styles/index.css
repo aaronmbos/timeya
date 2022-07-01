@@ -117,7 +117,7 @@ main {
 
 .timer-click {
     cursor: pointer;
-    font-family: monospace;
+    font-family: ui-monospace, Consolas, Menlo, monospace;
 }
 
 .timer-click:hover {
@@ -133,7 +133,7 @@ main {
     border: 1px solid gray;
     text-align: center;
     font-size: 1.4rem;
-    font-family: monospace;
+    font-family: ui-monospace, Consolas, Menlo, monospace;
 }
 
 .timer-edit-container {
